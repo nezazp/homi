@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Selected Date -->
+    <TextView
+        android:id="@+id/selectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selected Date: None"
+        android:textSize="18sp"
+        android:paddingBottom="8dp" />
+
+    <!-- Calendar View -->
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Event List -->
+    <LinearLayout
+        android:id="@+id/eventListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Add Event Button -->
+    <Button
+        android:id="@+id/addEventButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Event"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_nav_menu" />
+
+</LinearLayout>

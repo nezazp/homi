@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Welcome Message -->
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Welcome, User!"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="16dp" />
+
+    <!-- Event Summary -->
+    <TextView
+        android:id="@+id/eventSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Events: 0\nToday's Events: 0"
+        android:textSize="18sp"
+        android:paddingBottom="16dp" />
+
+    <!-- Upcoming Events Title -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Upcoming Events (Next 7 Days)"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
+
+    <!-- Upcoming Events Container -->
+    <LinearLayout
+        android:id="@+id/upcomingEventsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <!-- Navigation Buttons -->
+    <Button
+        android:id="@+id/manageEventsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Manage Events"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/addEventButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add New Event"
+        android:layout_marginTop="8dp" />
+
+    <!-- Notifications Container -->
+    <LinearLayout
+        android:id="@+id/notificationsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:menu="@menu/bottom_nav_menu" />
+
+</LinearLayout>
