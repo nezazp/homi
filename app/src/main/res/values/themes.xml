@@ -15,8 +15,4 @@
             <item name="cornerRadius">10dp</item>
         </style>
 
-        <!-- Apply the style to all buttons in the app -->
-        <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-            <item name="buttonStyle">@style/AppButtonStyle</item>
-        </style>
 </resources>
