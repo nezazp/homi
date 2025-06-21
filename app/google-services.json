@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1036831260745",
+    "project_id": "homi-3609e",
+    "storage_bucket": "homi-3609e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1036831260745:android:5fc8ca3dc19ce810f37f98",
+        "android_client_info": {
+          "package_name": "si.uni.lj.fe.tnuv.homi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBILCN4UTpUEc10ZbG4nY9InqZq7y9b-9g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
