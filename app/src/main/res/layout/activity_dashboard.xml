@@ -1,75 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Welcome Message -->
-    <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Welcome, User!"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingBottom="16dp" />
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Event Summary -->
-    <TextView
-        android:id="@+id/eventSummary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Total Events: 0\nToday's Events: 0"
-        android:textSize="18sp"
-        android:paddingBottom="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!-- Upcoming Events Title -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Upcoming Events (Next 7 Days)"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp" />
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Welcome, User!"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingBottom="16dp"
+                android:contentDescription="Welcome message" />
 
-    <!-- Upcoming Events Container -->
-    <LinearLayout
-        android:id="@+id/upcomingEventsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Today's Events"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"
+                android:contentDescription="Today's events header" />
 
-    <!-- Navigation Buttons -->
-    <Button
-        android:id="@+id/manageEventsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Manage Events"
-        android:layout_marginTop="16dp" />
+            <!-- Empty State TextView for Today's Events -->
+            <TextView
+                android:id="@+id/noTodaysEventsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No events today!"
+                android:contentDescription="No events today"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:visibility="gone" />
 
-    <Button
-        android:id="@+id/addEventButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add New Event"
-        android:layout_marginTop="8dp" />
+            <!-- RecyclerView for today's events -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/TodaysEventsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:contentDescription="List of today's events"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_max="200dp" />
 
-    <!-- Notifications Container -->
-    <LinearLayout
-        android:id="@+id/notificationsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upcoming Events (Next 7 Days)"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingBottom="8dp"
+                android:contentDescription="Upcoming events header" />
 
-    <!-- Bottom Navigation -->
+            <!-- Empty State TextView for Upcoming Events -->
+            <TextView
+                android:id="@+id/noEventsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No upcoming events in the next 7 days!"
+                android:contentDescription="No upcoming events in the next 7 days"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:visibility="gone" />
+
+            <!-- RecyclerView for upcoming events -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/upcomingEventsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:contentDescription="List of upcoming events for the next 7 days"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_max="200dp" />
+
+            <LinearLayout
+                android:id="@+id/notificationsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:contentDescription="Notifications section" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:menu="@menu/bottom_nav_menu" />
-
-</LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/bottom_nav_menu"
+        android:contentDescription="Bottom navigation menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>

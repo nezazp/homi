@@ -2,10 +2,10 @@ package si.uni.lj.fe.tnuv.homi
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import si.uni.lj.fe.tnuv.homi.databinding.ActivityDashboardBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,39 +26,70 @@ class DashboardActivity : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         events = intent.getSerializableExtra("events") as? List<Event> ?: emptyList()
 
-        // Set welcome message (placeholder user, replace with actual user if available)
+        // Set welcome message
         val currentUser = "User" // Replace with actual user data if authentication is implemented
         binding.welcomeText.text = "Welcome, $currentUser!"
 
-        // Display event summary
-        val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
-        val currentDate = sdf.format(Date())
-        val todayEvents = events.filter { it.date == currentDate }
-        binding.eventSummary.text = "Today's Events: ${todayEvents.size}"
-
-        // Display upcoming events (within next 7 days)
+        // Display today's and upcoming events
+        displayTodaysEvents()
         displayUpcomingEvents()
 
-        // Navigate to MainActivity for event management
-        binding.manageEventsButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("events", ArrayList(events)) // Pass events back
-            startActivity(intent)
+        // Set up BottomNavigationView
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_dashboard -> true
+                R.id.nav_calendar -> {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("events", ArrayList(events)) // Keep existing crash-prone code
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                R.id.nav_messages -> {
+                    startActivity(Intent(this, MessageBoardActivity::class.java))
+                    finish()
+                    true
+                }
+                else -> false
+            }
         }
+        binding.bottomNavigation.selectedItemId = R.id.nav_dashboard
+        // Highlight Dashboard item
+        binding.bottomNavigation.selectedItemId = R.id.nav_dashboard
+    }
 
-        // Navigate to MainActivity to add a new event
-        binding.addEventButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("events", ArrayList(events))
-            intent.putExtra("openAddEvent", true) // Flag to open add event dialog
-            startActivity(intent)
+    private fun displayTodaysEvents() {
+        val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
+        val currentDate = sdf.format(Date())
+
+        val todaysEvents = events.filter { it.date == currentDate }
+
+        // Handle empty state
+        if (todaysEvents.isEmpty()) {
+            binding.noTodaysEventsText.visibility = View.VISIBLE
+            binding.TodaysEventsContainer.visibility = View.GONE
+            binding.TodaysEventsContainer.adapter = EventAdapter(emptyList()) { /* No-op */ }
+        } else {
+            binding.noTodaysEventsText.visibility = View.GONE
+            binding.TodaysEventsContainer.visibility = View.VISIBLE
+            binding.TodaysEventsContainer.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = EventAdapter(todaysEvents) { event ->
+                    Log.d("DashboardActivity", "Starting EventActionActivity with event: ${event.title}")
+                    try {
+                        val intent = Intent(this@DashboardActivity, EventActionActivity::class.java).apply {
+                            putExtra("event", event)
+                        }
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Log.e("DashboardActivity", "Failed to start EventActionActivity: ${e.message}")
+                    }
+                }
+            }
         }
     }
 
     private fun displayUpcomingEvents() {
-        val container = binding.upcomingEventsContainer
-        container.removeAllViews()
-
         val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
         val calendar = Calendar.getInstance()
         val today = calendar.time
@@ -76,21 +107,28 @@ class DashboardActivity : AppCompatActivity() {
             sdf.parse(it.date)?.time ?: 0
         }
 
+        // Handle empty state
         if (upcomingEvents.isEmpty()) {
-            val noEventsView = TextView(this)
-            noEventsView.text = "No upcoming events in the next 7 days"
-            noEventsView.setPadding(8, 8, 8, 8)
-            noEventsView.textSize = 16f
-            container.addView(noEventsView)
-            return
-        }
-
-        for (event in upcomingEvents) {
-            val eventView = TextView(this)
-            eventView.text = "📅 ${event.title}\n👥 ${event.participants.joinToString { it.username }}\n📆 ${event.date}\n⭐ Task Worth: ${event.taskWorth}"
-            eventView.setPadding(8, 8, 8, 8)
-            eventView.textSize = 16f
-            container.addView(eventView)
+            binding.noEventsText.visibility = View.VISIBLE
+            binding.upcomingEventsContainer.visibility = View.GONE
+            binding.upcomingEventsContainer.adapter = EventAdapter(emptyList()) { /* No-op */ }
+        } else {
+            binding.noEventsText.visibility = View.GONE
+            binding.upcomingEventsContainer.visibility = View.VISIBLE
+            binding.upcomingEventsContainer.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = EventAdapter(upcomingEvents) { event ->
+                    Log.d("DashboardActivity", "Starting EventActionActivity with event: ${event.title}")
+                    try {
+                        val intent = Intent(this@DashboardActivity, EventActionActivity::class.java).apply {
+                            putExtra("event", event)
+                        }
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Log.e("DashboardActivity", "Failed to start EventActionActivity: ${e.message}")
+                    }
+                }
+            }
         }
     }
 }

@@ -32,21 +32,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User1" />
+                android:text="User1"
+                style="@style/AppButtonStyle"/>
 
             <Button
                 android:id="@+id/user2Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User2" />
+                android:text="User2"
+                style="@style/AppButtonStyle"/>
 
             <Button
                 android:id="@+id/user3Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User3" />
+                android:text="User3"
+                style="@style/AppButtonStyle"/>
+
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -73,12 +77,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Number" />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="X" />
+            android:hint="# of times" />
         </LinearLayout>
 
         <LinearLayout
@@ -133,6 +132,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="number" />
+            android:hint="Number" />
     </LinearLayout>
 </LinearLayout>

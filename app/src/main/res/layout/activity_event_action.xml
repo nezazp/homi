@@ -1,0 +1,31 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/eventDetailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:paddingBottom="24dp" />
+
+    <Button
+        android:id="@+id/completeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I've completed the task"
+        style="@style/AppButtonStyle"
+        android:contentDescription="Complete task button" />
+
+    <Button
+        android:id="@+id/cantButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I can't"
+        android:layout_marginTop="12dp"
+        style="@style/AppButtonStyle"
+        android:contentDescription="Cannot complete task button" />
+</LinearLayout>

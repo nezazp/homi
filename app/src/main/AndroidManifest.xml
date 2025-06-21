@@ -20,6 +20,13 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".EventActionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MessageBoardActivity"
+            android:exported="false" />
+        <activity android:name=".ShoppingListActivity" />
     </application>
 
 </manifest>

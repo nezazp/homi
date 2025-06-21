@@ -15,10 +15,27 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
-data class Event(val title: String, val participants: List<User>, val repeating: Boolean, val taskWorth: Int, val date: String) : java.io.Serializable
-data class User(val username: String, val email: String, val password: String) : java.io.Serializable
+data class Event
+    (val title: String,
+     val participants: List<User>,
+     val repeating: Boolean,
+     val taskWorth: Int,
+     val date: String
+) : java.io.Serializable
 
+data class User(
+    val username: String,
+    val email: String,
+    val password: String
+) : java.io.Serializable
+
+data class Message(
+    val username: String,
+    val content: String,
+    val timestamp: Long
+)
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -67,18 +84,25 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_dashboard -> {
                     val intent = Intent(this, DashboardActivity::class.java)
-                    intent.putExtra("events", ArrayList(events))
+                    intent.putExtra("events", ArrayList(events)) // Keep existing crash-prone code
                     startActivity(intent)
-                    finish() // Close MainActivity
+                    finish()
                     true
                 }
-                R.id.nav_calendar -> {
-                    true // Already on Calendar, do nothing
+                R.id.nav_calendar -> true
+                R.id.nav_messages -> {
+                    startActivity(Intent(this, MessageBoardActivity::class.java))
+                    finish()
+                    true
+                }
+                R.id.nav_shopping -> {
+                    startActivity(Intent(this, ShoppingListActivity::class.java))
+                    finish()
+                    true
                 }
                 else -> false
             }
         }
-        // Highlight Calendar item
         binding.bottomNavigation.selectedItemId = R.id.nav_calendar
     }
 
@@ -124,10 +148,10 @@ class MainActivity : AppCompatActivity() {
         fun toggleUser(button: Button, user: User) {
             if (selectedUsers.contains(user)) {
                 selectedUsers.remove(user)
-                button.setBackgroundColor(android.graphics.Color.LTGRAY)
+                button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.colorPrimary)
             } else {
                 selectedUsers.add(user)
-                button.setBackgroundColor(android.graphics.Color.GREEN)
+                button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.button_selected)
             }
         }
 
