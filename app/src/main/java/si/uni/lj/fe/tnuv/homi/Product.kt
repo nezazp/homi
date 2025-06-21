@@ -1,5 +1,4 @@
 package si.uni.lj.fe.tnuv.homi
-
 data class Product(
     val id: Int,
     val name: String,
