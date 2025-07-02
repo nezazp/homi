@@ -7,6 +7,7 @@
         <!-- Add colors for BottomNavigationView -->
         <item name="colorSurface">@color/colorPrimaryDark</item>
         <item name="colorOnSurface">@android:color/black</item>
+
     </style>
         <!-- Define a custom button style -->
         <style name="AppButtonStyle" parent="Widget.MaterialComponents.Button">
