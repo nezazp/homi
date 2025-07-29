@@ -12,6 +12,7 @@ import java.util.*
 import android.widget.EditText
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // Retrieve events from intent
         @Suppress("UNCHECKED_CAST")
         intent.getSerializableExtra("events")?.let {
