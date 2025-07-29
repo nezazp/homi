@@ -12,7 +12,20 @@
           "package_name": "si.uni.lj.fe.tnuv.homi"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1036831260745-p5b4h1pprbi7fhusajh4nnsmcoose6bb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "si.uni.lj.fe.tnuv.homi",
+            "certificate_hash": "a7b073dbd3aa2608f84a7b9926befc52ba18aaf8"
+          }
+        },
+        {
+          "client_id": "1036831260745-jk701ggkdq5pk1occ9e9j7pq51ok0cq4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBILCN4UTpUEc10ZbG4nY9InqZq7y9b-9g"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1036831260745-jk701ggkdq5pk1occ9e9j7pq51ok0cq4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
