@@ -7,9 +7,40 @@
     android:orientation="vertical"
     android:padding="24dp">
 
+    <TextView
+    android:text="email"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"/>
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
-        android:id="@+id/sign_in_button"
+        android:id="@+id/sign_in_w_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in" />
+
+    <Button
+        android:id="@+id/sign_in_w_google_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Sign in with Google" />
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create account" />
 </LinearLayout>

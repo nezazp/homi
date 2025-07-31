@@ -28,7 +28,14 @@
             android:name=".MessageBoardActivity"
             android:exported="false" />
         <activity android:name=".ShoppingListActivity" />
-        <activity android:name=".DashboardActivity" />
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

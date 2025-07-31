@@ -1,66 +1,39 @@
 package si.uni.lj.fe.tnuv.homi
 
-
-
 import android.content.Intent
-
 import android.os.Bundle
-
 import android.util.Log
-
 import android.view.View
-
 import androidx.appcompat.app.AppCompatActivity
-
 import androidx.recyclerview.widget.LinearLayoutManager
-
 import si.uni.lj.fe.tnuv.homi.databinding.ActivityDashboardBinding
-
 import java.text.SimpleDateFormat
-
 import java.util.*
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 
 class DashboardActivity : AppCompatActivity() {
-
-
-
     private lateinit var binding: ActivityDashboardBinding
-
     private lateinit var events: List<Event>
-
-
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-
-
-
-        // Initialize ViewBinding
-
         binding = ActivityDashboardBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
+        auth = FirebaseAuth.getInstance()
 
-
-        // Retrieve events from intent
+        // Set welcome message with user's display name
+        val currentUser: FirebaseUser? = auth.currentUser
+        val userName = currentUser?.displayName ?: "User" // Fallback to "User" if no name
+        binding.welcomeText.text = "Welcome, $userName!"
 
         @Suppress("UNCHECKED_CAST")
 
         events = intent.getSerializableExtra("events") as? List<Event> ?: emptyList()
-
-
-
-        // Set welcome message
-
-        val currentUser = "User" // Replace with actual user data if authentication is implemented
-
-        binding.welcomeText.text = "Welcome, $currentUser!"
-
-
 
         // Display today's and upcoming events
 
