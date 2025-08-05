@@ -1,0 +1,16 @@
+{
+  "users": {
+    "aZCrRPTgNAoA7Ee3hDyc": {
+      "email": "neza.zo.po@gmail.com",
+      "username": "neza"
+    },
+    "testUser1": {
+      "email": "test1@example.com",
+      "username": "Test_Random1"
+    },
+    "testUser2": {
+      "email": "test2@example.com",
+      "username": "Test_Random2"
+    }
+  }
+}

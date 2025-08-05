@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.services)
-    id("com.android.application")
+    alias(libs.plugins.android.application)
 }
 
 android {
@@ -45,13 +45,18 @@ android {
 
 dependencies {
     // Firebase BOM to manage Firebase library versions
+    implementation("com.google.firebase:firebase-database-ktx:21.0.0")
+    implementation("com.google.firebase:firebase-core:21.0.0")
+    implementation("com.google.firebase:firebase-database:20.3.1")
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
-
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation("com.google.firebase:firebase-database-ktx:21.0.0")
     // Firebase dependencies (versions managed by BOM)
     implementation("com.google.firebase:firebase-auth")
+    implementation ("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-messaging")
-
+    implementation("com.google.firebase:firebase-analytics:22.1.0")
     // Credential Manager for Google Sign-In
     implementation("androidx.credentials:credentials:1.2.2")
     implementation("androidx.credentials:credentials-play-services-auth:1.2.2")

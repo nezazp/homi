@@ -32,7 +32,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User1"
                 style="@style/AppButtonStyle"/>
 
             <Button
@@ -40,7 +39,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User2"
                 style="@style/AppButtonStyle"/>
 
             <Button
@@ -48,7 +46,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="User3"
                 style="@style/AppButtonStyle"/>
 
         </LinearLayout>
@@ -58,12 +55,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/repeatToggle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="repeating" />
+        <Button
+            android:id="@+id/repeatToggle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="repeating" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,42 +75,42 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="# of times" />
-        </LinearLayout>
+    </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/frequencyRadioGroup"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioGroup
-                android:id="@+id/frequencyRadioGroup"
-                android:layout_width="0dp"
+            android:layout_weight="1">
+            <RadioButton
+                android:id="@+id/dailyRadioButton"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
-                <RadioButton
-                    android:id="@+id/dailyRadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Daily"
-                    android:checked="true" />
-                <RadioButton
-                    android:id="@+id/weeklyRadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Weekly" />
+                android:text="Daily"
+                android:checked="true" />
+            <RadioButton
+                android:id="@+id/weeklyRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Weekly" />
 
-                <RadioButton
-                    android:id="@+id/monthlyRadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Monthly" />
+            <RadioButton
+                android:id="@+id/monthlyRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Monthly" />
 
-                <RadioButton
-                    android:id="@+id/yearlyRadioButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Yearly" />
-            </RadioGroup>
+            <RadioButton
+                android:id="@+id/yearlyRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yearly" />
+        </RadioGroup>
     </LinearLayout>
 
     <LinearLayout

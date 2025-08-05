@@ -1,5 +1,9 @@
 package si.uni.lj.fe.tnuv.homi
 
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -27,16 +31,11 @@ data class Event
 ) : java.io.Serializable
 
 data class User(
-    val username: String,
-    val email: String,
-    val password: String
+    val username: String = "",
+    val email: String = "",
 ) : java.io.Serializable
 
-data class Message(
-    val username: String,
-    val content: String,
-    val timestamp: Long
-)
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -44,10 +43,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        FirebaseApp.initializeApp(this)
         // Initialize ViewBinding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // Retrieve events from intent
         @Suppress("UNCHECKED_CAST")
@@ -104,15 +104,69 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        binding.testFirebaseButton.setOnClickListener {
+            listUsersFromFirebase()
+        }
         binding.bottomNavigation.selectedItemId = R.id.nav_calendar
     }
+    private fun listUsersFromFirebase() {
+        if (isFinishing) return
+        val container = findViewById<LinearLayout>(R.id.userListLayout)
+        container.removeAllViews()
 
+        val database = Firebase.database
+        val usersRef = database.getReference("users")
+
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (isFinishing) return
+                if (!snapshot.exists() || snapshot.childrenCount == 0L) {
+                    val noUsersView = TextView(this@MainActivity)
+                    noUsersView.text = "No users found in Firebase"
+                    container.addView(noUsersView)
+                    Toast.makeText(this@MainActivity, "No users found", Toast.LENGTH_SHORT).show()
+                    Log.d("FirebaseUsers", "No users found in the database")
+                    return
+                }
+
+                val users = mutableListOf<User>()
+                for (userSnapshot in snapshot.children) {
+                    try {
+                        val user = userSnapshot.getValue(User::class.java)
+                        if (user != null && user.username.isNotEmpty() && user.email.isNotEmpty()) {
+                            users.add(user)
+                            Log.d("FirebaseUsers", "User: username=${user.username}, email=${user.email}")
+                            val userView = TextView(this@MainActivity)
+                            userView.text = "👤 ${user.username} (${user.email})"
+                            userView.setPadding(8, 8, 8, 8)
+                            userView.textSize = 16f
+                            container.addView(userView)
+                        } else {
+                            Log.w("FirebaseUsers", "Invalid user data for key: ${userSnapshot.key}")
+                        }
+                    } catch (e: com.google.firebase.database.DatabaseException) {
+                        Log.e("FirebaseUsers", "Error parsing user data for key: ${userSnapshot.key}", e)
+                    }
+                }
+                Toast.makeText(this@MainActivity, "Loaded ${users.size} user(s)", Toast.LENGTH_SHORT).show()
+                Log.d("FirebaseUsers", "Total users loaded: ${users.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (isFinishing) return
+                Toast.makeText(this@MainActivity, "Error reading users: ${error.message}", Toast.LENGTH_LONG).show()
+                Log.e("FirebaseUsers", "Error reading users: ${error.message}", error.toException())
+            }
+        })
+    }
     override fun onBackPressed() {
         // Navigate back to DashboardActivity with updated events
         val intent = Intent(this, DashboardActivity::class.java)
         intent.putExtra("events", ArrayList(events))
         startActivity(intent)
         finish()
+        super.onBackPressed()
     }
 
     private fun showAddEventDialog() {
@@ -141,9 +195,9 @@ class MainActivity : AppCompatActivity() {
 
         val selectedUsers = mutableListOf<User>()
         val availableUsers = listOf(
-            User("User1", "user1@example.com", "password1"),
-            User("User2", "user2@example.com", "password2"),
-            User("User3", "user3@example.com", "password3")
+            User("User1", "user1@example.com"),
+            User("User2", "user2@example.com"),
+            User("User3", "user3@example.com")
         )
 
         fun toggleUser(button: Button, user: User) {

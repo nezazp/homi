@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:text="Selected Date: None"
         android:textSize="18sp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:layout_marginTop="60dp"/>
 
     <!-- Calendar View -->
     <CalendarView
@@ -38,6 +39,21 @@
         android:layout_height="wrap_content"
         android:text="Add Event"
         android:layout_marginBottom="8dp" />
+
+    <LinearLayout
+        android:id="@+id/userListLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/testFirebaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Users from Firebase"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp" />
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
