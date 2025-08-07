@@ -180,6 +180,50 @@ class MainActivity : AppCompatActivity() {
         val user2Button = dialogView.findViewById<Button>(R.id.user2Button)
         val user3Button = dialogView.findViewById<Button>(R.id.user3Button)
 
+        // Fetch users from Firebase
+        val database = Firebase.database
+        val usersRef = database.getReference("users")
+        val availableUsers = mutableListOf<User>()
+        val selectedUsers = mutableListOf<User>()
+
+        usersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (isFinishing) return
+                availableUsers.clear()
+                for (userSnapshot in snapshot.children) {
+                    try {
+                        val user = userSnapshot.getValue(User::class.java)
+                        if (user != null && user.username.isNotEmpty() && user.email.isNotEmpty()) {
+                            availableUsers.add(user)
+                        }
+                    } catch (e: com.google.firebase.database.DatabaseException) {
+                        Log.e("FirebaseUsers", "Error parsing user data for key: ${userSnapshot.key}", e)
+                    }
+                }
+
+                // Update button texts with usernames (up to 3 users)
+                if (availableUsers.isNotEmpty()) {
+                    user1Button.text = availableUsers.getOrNull(0)?.username ?: "User 1"
+                    user2Button.text = availableUsers.getOrNull(1)?.username ?: "User 2"
+                    user3Button.text = availableUsers.getOrNull(2)?.username ?: "User 3"
+                } else {
+                    user1Button.text = "No User"
+                    user2Button.text = "No User"
+                    user3Button.text = "No User"
+                    Toast.makeText(this@MainActivity, "No users found in Firebase", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                if (isFinishing) return
+                Toast.makeText(this@MainActivity, "Error loading users: ${error.message}", Toast.LENGTH_LONG).show()
+                Log.e("FirebaseUsers", "Error reading users: ${error.message}", error.toException())
+                user1Button.text = "No User"
+                user2Button.text = "No User"
+                user3Button.text = "No User"
+            }
+        })
+
         // Repeat toggle logic
         repeatToggle.setOnClickListener {
             if (repeatToggle.text.toString() == "repeating") {
@@ -193,14 +237,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val selectedUsers = mutableListOf<User>()
-        val availableUsers = listOf(
-            User("User1", "user1@example.com"),
-            User("User2", "user2@example.com"),
-            User("User3", "user3@example.com")
-        )
-
-        fun toggleUser(button: Button, user: User) {
+        // Toggle user selection
+        fun toggleUser(button: Button, user: User?) {
+            if (user == null) return
             if (selectedUsers.contains(user)) {
                 selectedUsers.remove(user)
                 button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.colorPrimary)
@@ -210,9 +249,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        user1Button.setOnClickListener { toggleUser(user1Button, availableUsers[0]) }
-        user2Button.setOnClickListener { toggleUser(user2Button, availableUsers[1]) }
-        user3Button.setOnClickListener { toggleUser(user3Button, availableUsers[2]) }
+        user1Button.setOnClickListener { toggleUser(user1Button, availableUsers.getOrNull(0)) }
+        user2Button.setOnClickListener { toggleUser(user2Button, availableUsers.getOrNull(1)) }
+        user3Button.setOnClickListener { toggleUser(user3Button, availableUsers.getOrNull(2)) }
 
         val builder = AlertDialog.Builder(this)
             .setTitle("Add Event")
