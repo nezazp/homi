@@ -74,11 +74,12 @@ class MessageBoardActivity : AppCompatActivity() {
             }
         }
         val intentFilter = IntentFilter("NEW_MESSAGE")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(messageReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(messageReceiver, intentFilter)
-        }
+        ContextCompat.registerReceiver(
+            this,
+            messageReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
 
         // Update UI based on messages
         updateMessageVisibility()
