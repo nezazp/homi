@@ -303,7 +303,7 @@ class MainActivity : AppCompatActivity() {
                                 taskWorth = taskWorthValue,
                                 date = sdf.format(calendar.time)
                             )
-                            events.add(event)
+                            EventStore.addEvent(event)
                         } else {
                             var userIndex = 0
                             when (frequency) {
@@ -318,7 +318,7 @@ class MainActivity : AppCompatActivity() {
                                                 taskWorth = taskWorthValue,
                                                 date = sdf.format(calendar.time)
                                             )
-                                            events.add(event)
+                                            EventStore.addEvent(event)
                                             Log.d("Event", "Event added on date: ${sdf.format(calendar.time)}, User: ${selectedUsers[userIndex % selectedUsers.size].username}")
                                             userIndex++
                                         }
@@ -338,7 +338,7 @@ class MainActivity : AppCompatActivity() {
                                                 taskWorth = taskWorthValue,
                                                 date = sdf.format(calendar.time)
                                             )
-                                            events.add(event)
+                                            EventStore.addEvent(event)
                                             Log.d("Event", "Event added on date: ${sdf.format(calendar.time)}, User: ${selectedUsers[userIndex % selectedUsers.size].username}")
                                             userIndex++
                                             if (i < repeatCount - 1) {
@@ -386,7 +386,7 @@ class MainActivity : AppCompatActivity() {
                                                 taskWorth = taskWorthValue,
                                                 date = sdf.format(calendar.time)
                                             )
-                                            events.add(event)
+                                            EventStore.addEvent(event)
                                             Log.d("Event", "Event added on date: ${sdf.format(calendar.time)}, User: ${selectedUsers[userIndex % selectedUsers.size].username}")
                                             userIndex++
                                             if (i < repeatCount - 1) {
@@ -422,7 +422,7 @@ class MainActivity : AppCompatActivity() {
         val container = findViewById<LinearLayout>(R.id.eventListLayout)
         container.removeAllViews()
 
-        val eventsOnDate = events.filter { it.date == date }
+        val eventsOnDate = EventStore.getEvents().filter { it.date == date }
 
         if (eventsOnDate.isEmpty()) {
             val noEventView = TextView(this)
