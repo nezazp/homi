@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-
     <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scrollView"
@@ -30,8 +29,68 @@
                 android:text="Welcome, User!"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:paddingBottom="16dp"
+                android:paddingBottom="8dp"
                 android:contentDescription="Welcome message" />
+
+            <!-- Group ID or Buttons -->
+            <Button
+                android:id="@+id/groupIdButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group ID: Not in a group"
+                android:textSize="16sp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"
+                android:contentDescription="Group ID" />
+
+            <LinearLayout
+                android:id="@+id/groupButtonsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/createGroupButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Create Group"
+                    android:contentDescription="Create a new group" />
+
+                <Button
+                    android:id="@+id/joinGroupButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Join Group"
+                    android:contentDescription="Join an existing group" />
+            </LinearLayout>
+
+            <!-- Group Members Header -->
+            <TextView
+                android:id="@+id/groupMembersHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group Members"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone"
+                android:contentDescription="Group members header" />
+
+            <!-- User List -->
+            <LinearLayout
+                android:id="@+id/userListLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp"
+                android:visibility="gone"
+                android:contentDescription="List of group members" />
 
             <TextView
                 android:layout_width="match_parent"
