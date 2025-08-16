@@ -49,13 +49,26 @@ class DashboardActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = Firebase.database.reference
 
-        // Set welcome message with user's display name
+        // Set welcome message with user's display name and points
         val currentUser: FirebaseUser? = auth.currentUser
         val userName = currentUser?.displayName ?: "User"
         binding.welcomeText.text = "Welcome, $userName!"
 
-        // Fetch user's groupId
         if (currentUser != null) {
+            // Fetch user's points
+            database.child("users").child(currentUser.uid).get()
+                .addOnSuccessListener { snapshot ->
+                    val user = snapshot.getValue(User::class.java)
+                    val points = user?.points?.toString() ?: "0"
+                    binding.userPointsText.text = "Points: $points"
+                }
+                .addOnFailureListener { error ->
+                    Log.e("DashboardActivity", "Failed to fetch user points", error)
+                    binding.userPointsText.text = "Points: Error"
+                    Toast.makeText(this, "Error fetching points: ${error.message}", Toast.LENGTH_LONG).show()
+                }
+
+            // Fetch user's groupId
             database.child("users").child(currentUser.uid).child("groupId").get()
                 .addOnSuccessListener { snapshot ->
                     groupId = snapshot.value as? String

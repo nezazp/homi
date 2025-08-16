@@ -38,7 +38,7 @@ data class User(
     val username: String = "",
     val email: String = "",
     val groupId: String = "",
-    val points: Number = 0
+    val points: Long = 0
 ) : java.io.Serializable
 
 class MainActivity : AppCompatActivity() {

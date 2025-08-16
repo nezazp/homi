@@ -66,16 +66,26 @@ class EventActionActivity : AppCompatActivity() {
                     }
 
                     // Calculate new points
-                    val currentPoints = (user.points as? Long)?.toInt() ?: (user.points as? Int) ?: 0
+                    val currentPoints = user.points ?: 0
                     val newPoints = currentPoints + event.taskWorth
 
                     // Update user's points in Firebase
                     database.child("users").child(currentUser.uid).child("points").setValue(newPoints)
                         .addOnSuccessListener {
-                            Toast.makeText(this, "Task completed! Added ${event.taskWorth} points. Total: $newPoints", Toast.LENGTH_SHORT).show()
-                            Log.d("EventActionActivity", "Points updated for user ${currentUser.uid}: $newPoints")
-                            setResult(Activity.RESULT_OK)
-                            finish()
+                            // Delete the event from Firebase
+                            database.child("groups").child(groupId).child("events").child(eventId).removeValue()
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Task completed! Added ${event.taskWorth} points. Total: $newPoints. Event deleted.", Toast.LENGTH_SHORT).show()
+                                    Log.d("EventActionActivity", "Points updated for user ${currentUser.uid}: $newPoints, Event $eventId deleted")
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                }
+                                .addOnFailureListener { error ->
+                                    Toast.makeText(this, "Failed to delete event: ${error.message}", Toast.LENGTH_LONG).show()
+                                    Log.e("EventActionActivity", "Failed to delete event $eventId", error)
+                                    setResult(Activity.RESULT_OK) // Still return OK since points were updated
+                                    finish()
+                                }
                         }
                         .addOnFailureListener { error ->
                             Toast.makeText(this, "Failed to update points: ${error.message}", Toast.LENGTH_LONG).show()
@@ -197,5 +207,33 @@ class EventActionActivity : AppCompatActivity() {
             }
             showDeleteEventDialog(event, event.date, eventId, groupId)
         }
+    }
+
+    private fun showDeleteEventDialog(event: Event, date: String, eventId: String, groupId: String) {
+        // Implementation of showDeleteEventDialog (not provided in the original code)
+        // Add dialog to confirm deletion and remove event from Firebase
+        val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Delete Event")
+            .setMessage("Are you sure you want to delete the event '${event.title}' on $date?")
+            .setPositiveButton("Delete") { _, _ ->
+                database.child("groups").child(groupId).child("events").child(eventId).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Event deleted successfully", Toast.LENGTH_SHORT).show()
+                        Log.d("EventActionActivity", "Event $eventId deleted")
+                        setResult(Activity.RESULT_OK)
+                        finish()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(this, "Failed to delete event: ${error.message}", Toast.LENGTH_LONG).show()
+                        Log.e("EventActionActivity", "Failed to delete event $eventId", error)
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
+                    }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
     }
 }
