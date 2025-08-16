@@ -2,6 +2,7 @@ package si.uni.lj.fe.tnuv.homi
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -11,7 +12,6 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.Random
-import android.util.Log
 
 class EventActionActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -36,9 +36,60 @@ class EventActionActivity : AppCompatActivity() {
         eventTextView.contentDescription = eventTextView.text
 
         findViewById<Button>(R.id.completeButton).setOnClickListener {
-            // Handle completion logic here (placeholder, can be extended)
-            setResult(Activity.RESULT_OK)
-            finish()
+            if (event == null || eventId == null || groupId == null) {
+                Toast.makeText(this, "Error: Event or group data missing", Toast.LENGTH_LONG).show()
+                Log.e("EventActionActivity", "Missing event, eventId, or groupId")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+                return@setOnClickListener
+            }
+
+            val currentUser = auth.currentUser
+            if (currentUser == null) {
+                Toast.makeText(this, "Error: User not authenticated", Toast.LENGTH_LONG).show()
+                Log.e("EventActionActivity", "User not authenticated")
+                setResult(Activity.RESULT_CANCELED)
+                finish()
+                return@setOnClickListener
+            }
+
+            // Fetch current user's data to get current points
+            database.child("users").child(currentUser.uid).get()
+                .addOnSuccessListener { snapshot ->
+                    val user = snapshot.getValue(User::class.java)
+                    if (user == null) {
+                        Toast.makeText(this, "Error: User data not found", Toast.LENGTH_LONG).show()
+                        Log.e("EventActionActivity", "User data not found for UID: ${currentUser.uid}")
+                        setResult(Activity.RESULT_CANCELED)
+                        finish()
+                        return@addOnSuccessListener
+                    }
+
+                    // Calculate new points
+                    val currentPoints = (user.points as? Long)?.toInt() ?: (user.points as? Int) ?: 0
+                    val newPoints = currentPoints + event.taskWorth
+
+                    // Update user's points in Firebase
+                    database.child("users").child(currentUser.uid).child("points").setValue(newPoints)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Task completed! Added ${event.taskWorth} points. Total: $newPoints", Toast.LENGTH_SHORT).show()
+                            Log.d("EventActionActivity", "Points updated for user ${currentUser.uid}: $newPoints")
+                            setResult(Activity.RESULT_OK)
+                            finish()
+                        }
+                        .addOnFailureListener { error ->
+                            Toast.makeText(this, "Failed to update points: ${error.message}", Toast.LENGTH_LONG).show()
+                            Log.e("EventActionActivity", "Failed to update points for user ${currentUser.uid}", error)
+                            setResult(Activity.RESULT_CANCELED)
+                            finish()
+                        }
+                }
+                .addOnFailureListener { error ->
+                    Toast.makeText(this, "Error fetching user data: ${error.message}", Toast.LENGTH_LONG).show()
+                    Log.e("EventActionActivity", "Error fetching user data for UID: ${currentUser.uid}", error)
+                    setResult(Activity.RESULT_CANCELED)
+                    finish()
+                }
         }
 
         findViewById<Button>(R.id.cantButton).setOnClickListener {
@@ -135,6 +186,16 @@ class EventActionActivity : AppCompatActivity() {
                     setResult(Activity.RESULT_CANCELED)
                     finish()
                 }
+        }
+
+        val deleteButton = findViewById<Button>(R.id.deleteButton)
+        deleteButton.setOnClickListener {
+            if (event == null || eventId == null || groupId == null) {
+                Toast.makeText(this, "Error: Event or group data missing", Toast.LENGTH_LONG).show()
+                Log.e("EventActionActivity", "Missing event, eventId, or groupId")
+                return@setOnClickListener
+            }
+            showDeleteEventDialog(event, event.date, eventId, groupId)
         }
     }
 }

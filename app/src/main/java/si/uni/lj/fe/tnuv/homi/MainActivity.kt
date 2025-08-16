@@ -25,16 +25,20 @@ import androidx.core.content.ContextCompat
 import java.util.UUID
 
 data class Event(
+    val id: String = UUID.randomUUID().toString(),
     val title: String,
     val participants: List<User>,
     val repeating: Boolean,
     val taskWorth: Int,
-    val date: String
+    val date: String,
+    val repeatGroupId: String? = null // Links events in a repeating series
 ) : java.io.Serializable
 
 data class User(
     val username: String = "",
     val email: String = "",
+    val groupId: String = "",
+    val points: Number = 0
 ) : java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
@@ -59,7 +63,6 @@ class MainActivity : AppCompatActivity() {
                     groupId = snapshot.value as? String
                     if (groupId == null || groupId!!.isEmpty()) {
                         Toast.makeText(this, "Please join a group to view events", Toast.LENGTH_LONG).show()
-                        // Optionally redirect to join group dialog
                     } else {
                         val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
                         val currentDate = sdf.format(Date())
@@ -133,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             }
             .setNeutralButton("Skip") { dialog, _ ->
                 dialog.dismiss()
-                // Stay in MainActivity without adding event
             }
             .create()
         alertDialog.show()
@@ -156,14 +158,14 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
-                showGroupOptionsDialog(uid) // Return to group options
+                showGroupOptionsDialog(uid)
             }
             .create()
         alertDialog.show()
     }
 
     private fun createGroup(uid: String, groupName: String) {
-        val groupId = UUID.randomUUID().toString().replace("-", "").substring(0, 8) // 8-character hash
+        val groupId = UUID.randomUUID().toString().replace("-", "").substring(0, 8)
         val groupsRef = database.child("groups").child(groupId)
         val usersRef = database.child("users").child(uid)
 
@@ -177,10 +179,10 @@ class MainActivity : AppCompatActivity() {
                     usersRef.child("groupId").setValue(groupId)
                         .addOnCompleteListener { userTask ->
                             if (userTask.isSuccessful) {
-                                this.groupId = groupId // Update local groupId
+                                this.groupId = groupId
                                 runOnUiThread {
                                     Toast.makeText(this, "Group created! ID: $groupId", Toast.LENGTH_LONG).show()
-                                    showAddEventDialog() // Proceed to add event
+                                    showAddEventDialog()
                                 }
                             } else {
                                 runOnUiThread {
@@ -215,7 +217,7 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
-                showGroupOptionsDialog(uid) // Return to group options
+                showGroupOptionsDialog(uid)
             }
             .create()
         alertDialog.show()
@@ -225,21 +227,18 @@ class MainActivity : AppCompatActivity() {
         val groupsRef = database.child("groups").child(groupId).child("members")
         val usersRef = database.child("users").child(uid)
 
-        // Check if group exists
         groupsRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful && task.result.exists()) {
-                // Add user to group members
                 groupsRef.child(uid).setValue(true)
                     .addOnCompleteListener { memberTask ->
                         if (memberTask.isSuccessful) {
-                            // Update user's groupId
                             usersRef.child("groupId").setValue(groupId)
                                 .addOnCompleteListener { userTask ->
                                     if (userTask.isSuccessful) {
-                                        this.groupId = groupId // Update local groupId
+                                        this.groupId = groupId
                                         runOnUiThread {
                                             Toast.makeText(this, "Joined group $groupId!", Toast.LENGTH_SHORT).show()
-                                            showAddEventDialog() // Proceed to add event
+                                            showAddEventDialog()
                                         }
                                     } else {
                                         runOnUiThread {
@@ -343,7 +342,6 @@ class MainActivity : AppCompatActivity() {
         val availableUsers = mutableListOf<User>()
         val selectedUsers = mutableListOf<User>()
 
-        // Fetch users in the same group
         if (groupId == null || groupId!!.isEmpty()) {
             Toast.makeText(this, "Please join a group to add events", Toast.LENGTH_SHORT).show()
             return
@@ -374,35 +372,20 @@ class MainActivity : AppCompatActivity() {
                         }
                         completedQueries++
                         if (completedQueries == uids.size) {
-                            // Update button texts (up to 3 users)
                             user1Button.text = availableUsers.getOrNull(0)?.username ?: "No User"
                             user2Button.text = availableUsers.getOrNull(1)?.username ?: "No User"
                             user3Button.text = availableUsers.getOrNull(2)?.username ?: "No User"
-                            if (availableUsers.isEmpty()) {
-                                Toast.makeText(this, "No users in your group", Toast.LENGTH_SHORT).show()
-                            }
                         }
                     }.addOnFailureListener { error ->
-                        Log.e("FirebaseUsers", "Error fetching user $uid: ${error.message}", error)
-                        completedQueries++
-                        if (completedQueries == uids.size) {
-                            user1Button.text = "No User"
-                            user2Button.text = "No User"
-                            user3Button.text = "No User"
-                            Toast.makeText(this, "Error loading group users", Toast.LENGTH_SHORT).show()
-                        }
+                        user1Button.text = "No User"
+                        user2Button.text = "No User"
+                        user3Button.text = "No User"
+                        Toast.makeText(this, "Error loading group users: ${error.message}", Toast.LENGTH_LONG).show()
+                        Log.e("FirebaseUsers", "Error reading group members: ${error.message}", error)
                     }
                 }
             }
-            .addOnFailureListener { error ->
-                user1Button.text = "No User"
-                user2Button.text = "No User"
-                user3Button.text = "No User"
-                Toast.makeText(this, "Error loading group users: ${error.message}", Toast.LENGTH_LONG).show()
-                Log.e("FirebaseUsers", "Error reading group members: ${error.message}", error)
-            }
 
-        // Repeat toggle logic
         repeatToggle.setOnClickListener {
             if (repeatToggle.text.toString() == "repeating") {
                 repeatToggle.text = "not repeating"
@@ -415,7 +398,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Toggle user selection
         fun toggleUser(button: Button, user: User?) {
             if (user == null) return
             if (selectedUsers.contains(user)) {
@@ -469,6 +451,7 @@ class MainActivity : AppCompatActivity() {
                     val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
                     val calendar = Calendar.getInstance()
                     val eventsRef = database.child("groups").child(groupId!!).child("events")
+                    val repeatGroupId = if (repeating) UUID.randomUUID().toString() else null
 
                     try {
                         calendar.time = sdf.parse(date) ?: Date()
@@ -476,11 +459,13 @@ class MainActivity : AppCompatActivity() {
                         if (!repeating) {
                             val eventId = eventsRef.push().key ?: return@setOnClickListener
                             val event = mapOf(
+                                "id" to eventId,
                                 "title" to title,
                                 "participants" to selectedUsers.map { mapOf("username" to it.username, "email" to it.email) },
                                 "repeating" to repeating,
                                 "taskWorth" to taskWorthValue,
-                                "date" to sdf.format(calendar.time)
+                                "date" to sdf.format(calendar.time),
+                                "repeatGroupId" to null
                             )
                             eventsRef.child(eventId).setValue(event)
                                 .addOnSuccessListener {
@@ -501,11 +486,13 @@ class MainActivity : AppCompatActivity() {
                                         for (i in 0 until repeatCount) {
                                             val eventId = eventsRef.push().key ?: continue
                                             val event = mapOf(
+                                                "id" to eventId,
                                                 "title" to title,
                                                 "participants" to listOf(mapOf("username" to selectedUsers[userIndex % selectedUsers.size].username, "email" to selectedUsers[userIndex % selectedUsers.size].email)),
                                                 "repeating" to repeating,
                                                 "taskWorth" to taskWorthValue,
-                                                "date" to sdf.format(calendar.time)
+                                                "date" to sdf.format(calendar.time),
+                                                "repeatGroupId" to repeatGroupId
                                             )
                                             eventsRef.child(eventId).setValue(event)
                                             userIndex++
@@ -524,11 +511,13 @@ class MainActivity : AppCompatActivity() {
                                         for (i in 0 until repeatCount) {
                                             val eventId = eventsRef.push().key ?: continue
                                             val event = mapOf(
+                                                "id" to eventId,
                                                 "title" to title,
                                                 "participants" to listOf(mapOf("username" to selectedUsers[userIndex % selectedUsers.size].username, "email" to selectedUsers[userIndex % selectedUsers.size].email)),
                                                 "repeating" to repeating,
                                                 "taskWorth" to taskWorthValue,
-                                                "date" to sdf.format(calendar.time)
+                                                "date" to sdf.format(calendar.time),
+                                                "repeatGroupId" to repeatGroupId
                                             )
                                             eventsRef.child(eventId).setValue(event)
                                             userIndex++
@@ -551,11 +540,13 @@ class MainActivity : AppCompatActivity() {
                                         for (i in 0 until repeatCount) {
                                             val eventId = eventsRef.push().key ?: continue
                                             val event = mapOf(
+                                                "id" to eventId,
                                                 "title" to title,
                                                 "participants" to listOf(mapOf("username" to selectedUsers[userIndex % selectedUsers.size].username, "email" to selectedUsers[userIndex % selectedUsers.size].email)),
                                                 "repeating" to repeating,
                                                 "taskWorth" to taskWorthValue,
-                                                "date" to sdf.format(calendar.time)
+                                                "date" to sdf.format(calendar.time),
+                                                "repeatGroupId" to repeatGroupId
                                             )
                                             eventsRef.child(eventId).setValue(event)
                                             userIndex++
@@ -578,11 +569,13 @@ class MainActivity : AppCompatActivity() {
                                         for (i in 0 until repeatCount) {
                                             val eventId = eventsRef.push().key ?: continue
                                             val event = mapOf(
+                                                "id" to eventId,
                                                 "title" to title,
                                                 "participants" to listOf(mapOf("username" to selectedUsers[userIndex % selectedUsers.size].username, "email" to selectedUsers[userIndex % selectedUsers.size].email)),
                                                 "repeating" to repeating,
                                                 "taskWorth" to taskWorthValue,
-                                                "date" to sdf.format(calendar.time)
+                                                "date" to sdf.format(calendar.time),
+                                                "repeatGroupId" to repeatGroupId
                                             )
                                             eventsRef.child(eventId).setValue(event)
                                             userIndex++
@@ -614,7 +607,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun displayEventsForDate(date: String) {
+    fun displayEventsForDate(date: String) {
         val container = findViewById<LinearLayout>(R.id.eventListLayout)
         container.removeAllViews()
 
@@ -638,20 +631,22 @@ class MainActivity : AppCompatActivity() {
 
                     for (eventSnapshot in snapshot.children) {
                         val eventMap = eventSnapshot.value as? Map<String, Any> ?: continue
+                        val id = eventMap["id"] as? String ?: ""
                         val title = eventMap["title"] as? String ?: ""
                         val repeating = eventMap["repeating"] as? Boolean ?: false
                         val taskWorth = (eventMap["taskWorth"] as? Long)?.toInt() ?: 5
                         val eventDate = eventMap["date"] as? String ?: ""
+                        val repeatGroupId = eventMap["repeatGroupId"] as? String
                         val participantsList = eventMap["participants"] as? List<Map<String, String>> ?: emptyList()
                         val participants = participantsList.map { User(it["username"] ?: "", it["email"] ?: "") }
 
-                        val event = Event(title, participants, repeating, taskWorth, eventDate)
+                        val event = Event(id, title, participants, repeating, taskWorth, eventDate, repeatGroupId)
                         val eventView = TextView(this@MainActivity)
                         eventView.text = "📅 ${event.title}\n👥 ${event.participants.joinToString { it.username }}\n⭐ Task Worth: ${event.taskWorth}"
                         eventView.setPadding(8, 8, 8, 8)
                         eventView.textSize = 16f
                         eventView.setOnClickListener {
-                            showDeleteEventDialog(event, date, eventSnapshot.key!!)
+                            showDeleteEventDialog(event, date, eventSnapshot.key!!, groupId!!)
                         }
                         container.addView(eventView)
                     }
@@ -662,25 +657,6 @@ class MainActivity : AppCompatActivity() {
                     Log.e("MainActivity", "Error loading events", error.toException())
                 }
             })
-    }
-
-    private fun showDeleteEventDialog(event: Event, date: String, eventId: String) {
-        val builder = AlertDialog.Builder(this)
-            .setTitle("Delete Event")
-            .setMessage("Are you sure you want to delete '${event.title}' on $date?")
-            .setPositiveButton("Delete") { _, _ ->
-                database.child("groups").child(groupId!!).child("events").child(eventId).removeValue()
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Event deleted", Toast.LENGTH_SHORT).show()
-                        displayEventsForDate(date)
-                    }
-                    .addOnFailureListener { error ->
-                        Toast.makeText(this, "Failed to delete event: ${error.message}", Toast.LENGTH_LONG).show()
-                        Log.e("MainActivity", "Failed to delete event", error)
-                    }
-            }
-            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
-        builder.create().show()
     }
 
     override fun onBackPressed() {

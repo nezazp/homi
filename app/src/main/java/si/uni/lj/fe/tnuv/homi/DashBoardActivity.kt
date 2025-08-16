@@ -355,16 +355,18 @@ class DashboardActivity : AppCompatActivity() {
                     val eventList = mutableListOf<Pair<Event, String>>()
                     for (eventSnapshot in snapshot.children) {
                         val eventMap = eventSnapshot.value as? Map<String, Any> ?: continue
+                        val id = eventMap["id"] as? String ?: ""
                         val title = eventMap["title"] as? String ?: ""
                         val repeating = eventMap["repeating"] as? Boolean ?: false
                         val taskWorth = (eventMap["taskWorth"] as? Long)?.toInt() ?: 5
                         val eventDate = eventMap["date"] as? String ?: ""
+                        val repeatGroupId = eventMap["repeatGroupId"] as? String
                         val participantsList = eventMap["participants"] as? List<Map<String, String>> ?: emptyList()
                         val participants = participantsList.map { User(it["username"] ?: "", it["email"] ?: "") }
 
                         // Check if current user is a participant
                         if (participants.any { it.email == currentUserEmail }) {
-                            val event = Event(title, participants, repeating, taskWorth, eventDate)
+                            val event = Event(id, title, participants, repeating, taskWorth, eventDate, repeatGroupId)
                             eventList.add(Pair(event, eventSnapshot.key ?: ""))
                         }
                     }
@@ -428,10 +430,12 @@ class DashboardActivity : AppCompatActivity() {
                     val eventList = mutableListOf<Pair<Event, String>>()
                     for (eventSnapshot in snapshot.children) {
                         val eventMap = eventSnapshot.value as? Map<String, Any> ?: continue
+                        val id = eventMap["id"] as? String ?: ""
                         val title = eventMap["title"] as? String ?: ""
                         val repeating = eventMap["repeating"] as? Boolean ?: false
                         val taskWorth = (eventMap["taskWorth"] as? Long)?.toInt() ?: 5
                         val eventDate = eventMap["date"] as? String ?: ""
+                        val repeatGroupId = eventMap["repeatGroupId"] as? String
                         val participantsList = eventMap["participants"] as? List<Map<String, String>> ?: emptyList()
                         val participants = participantsList.map { User(it["username"] ?: "", it["email"] ?: "") }
 
@@ -440,7 +444,7 @@ class DashboardActivity : AppCompatActivity() {
                             if (parsedDate != null && parsedDate.after(today) && parsedDate.before(sevenDaysFromNow)) {
                                 // Check if current user is a participant
                                 if (participants.any { it.email == currentUserEmail }) {
-                                    val event = Event(title, participants, repeating, taskWorth, eventDate)
+                                    val event = Event(id, title, participants, repeating, taskWorth, eventDate, repeatGroupId)
                                     eventList.add(Pair(event, eventSnapshot.key ?: ""))
                                 }
                             }

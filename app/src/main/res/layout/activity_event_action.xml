@@ -28,4 +28,13 @@
         android:layout_marginTop="12dp"
         style="@style/AppButtonStyle"
         android:contentDescription="Cannot complete task button" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="delete event"
+        android:layout_marginTop="12dp"
+        style="@style/AppButtonStyle"
+        android:contentDescription="Cannot complete task button" />
 </LinearLayout>

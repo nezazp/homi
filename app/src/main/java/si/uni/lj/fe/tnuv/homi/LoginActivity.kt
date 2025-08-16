@@ -167,7 +167,8 @@ class LoginActivity : ComponentActivity() {
                                     val userData = mapOf(
                                         "username" to name,
                                         "email" to email,
-                                        "groupId" to "" // Initially empty
+                                        "groupId" to "",
+                                        "points" to 0
                                     )
                                     usersRef.child(it.uid).setValue(userData)
                                         .addOnCompleteListener { dbTask ->
