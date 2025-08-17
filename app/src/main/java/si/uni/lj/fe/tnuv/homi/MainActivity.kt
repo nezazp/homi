@@ -38,7 +38,8 @@ data class User(
     val username: String = "",
     val email: String = "",
     val groupId: String = "",
-    val points: Long = 0
+    val points: Long = 0,
+    val spentAmount: Long = 0 // New field for total amount spent
 ) : java.io.Serializable
 
 class MainActivity : AppCompatActivity() {

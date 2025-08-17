@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="60dp"
     android:padding="16dp">
 
     <TextView
@@ -28,6 +29,8 @@
         app:layout_constraintBottom_toTopOf="@id/productInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp"
+        android:padding="16dp"
         android:contentDescription="List of shopping list products" />
 
     <EditText
@@ -57,9 +60,12 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:itemTextColor="@color/colorPrimary"
+        app:itemIconSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/bottom_nav_menu"
+        app:labelVisibilityMode="labeled"
         android:contentDescription="Bottom navigation menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

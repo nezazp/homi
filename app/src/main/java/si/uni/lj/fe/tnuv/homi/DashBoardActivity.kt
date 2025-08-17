@@ -55,12 +55,32 @@ class DashboardActivity : AppCompatActivity() {
         binding.welcomeText.text = "Welcome, $userName!"
 
         if (currentUser != null) {
-            // Fetch user's points
+            // Fetch user's points and spentAmount
             database.child("users").child(currentUser.uid).get()
                 .addOnSuccessListener { snapshot ->
                     val user = snapshot.getValue(User::class.java)
                     val points = user?.points?.toString() ?: "0"
                     binding.userPointsText.text = "Points: $points"
+
+                    val spent = user?.spentAmount ?: 0L
+                    val spentText = TextView(this)
+                    spentText.text = "  Spent: ${formatSpent(spent)}"
+                    spentText.layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    spentText.setTextColor(binding.userPointsText.currentTextColor)
+                    spentText.textSize = binding.userPointsText.textSize / resources.displayMetrics.scaledDensity
+                    spentText.setPadding(0, 8, 0, 0)
+
+                    val parent = binding.userPointsText.parent as? LinearLayout
+                    val index = parent?.indexOfChild(binding.userPointsText) ?: -1
+                    if (parent != null && index >= 0) {
+                        parent.addView(spentText, index + 1)
+                    } else {
+                        // Fallback if index not found
+                        parent?.addView(spentText)
+                    }
                 }
                 .addOnFailureListener { error ->
                     Log.e("DashboardActivity", "Failed to fetch user points", error)
@@ -118,6 +138,12 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
         binding.bottomNavigation.selectedItemId = R.id.nav_dashboard
+    }
+
+    private fun formatSpent(amount: Long): String {
+        val dollars = amount / 100
+        val cents = (amount % 100).toString().padStart(2, '0')
+        return "$$dollars.$cents"
     }
 
     private fun updateGroupUI() {
@@ -196,7 +222,7 @@ class DashboardActivity : AppCompatActivity() {
                                 if (uid != auth.currentUser?.uid) {
                                     users.add(user)
                                     val userView = TextView(this)
-                                    userView.text = "👤 ${user.username}"
+                                    userView.text = "👤 ${user.username} - Spent: ${formatSpent(user.spentAmount)}"
                                     userView.setPadding(8, 8, 8, 8)
                                     userView.textSize = 16f
                                     container.addView(userView)
