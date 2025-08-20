@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
                 .addOnSuccessListener { snapshot ->
                     groupId = snapshot.value as? String
                     if (groupId == null || groupId!!.isEmpty()) {
-                        Toast.makeText(this, "Please join a group to view events", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "Please join a group to view task", Toast.LENGTH_LONG).show()
                     } else {
                         val sdf = SimpleDateFormat("d/M/yyyy", Locale.getDefault())
                         val currentDate = sdf.format(Date())
@@ -415,7 +415,7 @@ class MainActivity : AppCompatActivity() {
         user3Button.setOnClickListener { toggleUser(user3Button, availableUsers.getOrNull(2)) }
 
         val builder = AlertDialog.Builder(this)
-            .setTitle("Add Event")
+            .setTitle("Add Task")
             .setView(dialogView)
             .setPositiveButton("Add", null)
             .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }

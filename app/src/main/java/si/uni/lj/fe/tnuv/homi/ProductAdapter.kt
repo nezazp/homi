@@ -54,6 +54,8 @@ class ProductAdapter(
             context,
             if (product.isBought) R.color.button_selected else R.color.colorPrimary
         )
+        // Disable the button if the product is already bought
+        holder.boughtButton.isEnabled = !product.isBought
         holder.boughtButton.setOnClickListener {
             if (!product.isBought) {
                 // Show dialog when clicking "Not Bought" to mark as "Bought"
@@ -109,14 +111,6 @@ class ProductAdapter(
                 }
 
                 dialog.show()
-            } else {
-                // Directly mark as not bought without dialog
-                val updatedProduct = product.copy(isBought = false, price = null)
-                val mutableProducts = products.toMutableList()
-                mutableProducts[position] = updatedProduct
-                products = mutableProducts
-                notifyItemChanged(position)
-                onBoughtClick(updatedProduct, position)
             }
         }
 

@@ -23,8 +23,8 @@ fun AppCompatActivity.showDeleteEventDialog(event: Event, date: String, eventId:
     // Set dialog title and message
     val titleView = dialog.findViewById<TextView>(R.id.delete_dialog_title)
     val messageView = dialog.findViewById<TextView>(R.id.delete_dialog_message)
-    titleView.text = "Delete Event"
-    messageView.text = "Do you want to delete '${event.title}' on $date, or all instances of this repeating event?"
+    titleView.text = "Delete Task"
+    messageView.text = "Do you want to delete '${event.title}' on $date, or all instances of this repeating task?"
 
     // Initialize buttons
     val deleteSingleButton = dialog.findViewById<Button>(R.id.delete_single_button)
@@ -44,7 +44,7 @@ fun AppCompatActivity.showDeleteEventDialog(event: Event, date: String, eventId:
     deleteSingleButton.setOnClickListener {
         database.child("groups").child(groupId).child("events").child(eventId).removeValue()
             .addOnSuccessListener {
-                Toast.makeText(this, "Event deleted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Task deleted", Toast.LENGTH_SHORT).show()
                 if (this is MainActivity) {
                     displayEventsForDate(date)
                 } else if (this is EventActionActivity) {

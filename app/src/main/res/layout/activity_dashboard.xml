@@ -102,19 +102,19 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Today's Events"
+                android:text="Today's Tasks"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:paddingBottom="8dp"
-                android:contentDescription="Today's events header" />
+                android:contentDescription="Today's tasks header" />
 
             <!-- Empty State TextView for Today's Events -->
             <TextView
                 android:id="@+id/noTodaysEventsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No events today!"
-                android:contentDescription="No events today"
+                android:text="No tasks today!"
+                android:contentDescription="No tasks today"
                 android:textSize="16sp"
                 android:padding="8dp"
                 android:visibility="gone" />

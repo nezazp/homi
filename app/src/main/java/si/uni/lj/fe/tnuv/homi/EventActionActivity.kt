@@ -29,7 +29,7 @@ class EventActionActivity : AppCompatActivity() {
         val groupId = intent.getStringExtra("groupId")
         val eventTextView = findViewById<TextView>(R.id.eventDetailText)
         eventTextView.text = if (event != null) {
-            "Event: ${event.title}\nDate: ${event.date}\nParticipants: ${event.participants.joinToString { it.username }}\nTask Worth: ${event.taskWorth}\nRepeating: ${if (event.repeating) "Yes" else "No"}"
+            "Task: ${event.title}\nDate: ${event.date}\nParticipants: ${event.participants.joinToString { it.username }}\nTask Worth: ${event.taskWorth}\nRepeating: ${if (event.repeating) "Yes" else "No"}"
         } else {
             "No event data available"
         }
@@ -171,7 +171,7 @@ class EventActionActivity : AppCompatActivity() {
                             database.child("groups").child(groupId).child("events").child(eventId)
                                 .setValue(updatedEvent)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Event reassigned to ${user.username}", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this, "Task reassigned to ${user.username}", Toast.LENGTH_LONG).show()
                                     Log.d("EventActionActivity", "Event $eventId reassigned to ${user.username}")
                                     setResult(Activity.RESULT_OK)
                                     finish()
@@ -213,8 +213,8 @@ class EventActionActivity : AppCompatActivity() {
         // Implementation of showDeleteEventDialog (not provided in the original code)
         // Add dialog to confirm deletion and remove event from Firebase
         val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Delete Event")
-            .setMessage("Are you sure you want to delete the event '${event.title}' on $date?")
+            .setTitle("Delete Task")
+            .setMessage("Are you sure you want to delete the task '${event.title}' on $date?")
             .setPositiveButton("Delete") { _, _ ->
                 database.child("groups").child(groupId).child("events").child(eventId).removeValue()
                     .addOnSuccessListener {

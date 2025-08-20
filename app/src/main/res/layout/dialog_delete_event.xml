@@ -9,7 +9,7 @@
         android:id="@+id/delete_dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete Event"
+        android:text="Delete Task"
         android:textSize="20sp"
         android:textStyle="bold"
         android:paddingBottom="8dp" />
@@ -18,7 +18,7 @@
         android:id="@+id/delete_dialog_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Do you want to delete this event, or all instances of this repeating event?"
+        android:text="Do you want to delete this task, or all instances of this repeating task?"
         android:textSize="16sp"
         android:paddingBottom="16dp" />
 
@@ -26,7 +26,7 @@
         android:id="@+id/delete_single_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete This Event"
+        android:text="Delete This task"
         android:textAllCaps="false"
         android:layout_marginBottom="8dp" />
 
